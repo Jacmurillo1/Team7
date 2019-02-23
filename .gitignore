@@ -1,1 +1,10 @@
-/target/
+# The following won't be added to git
+# IntelliJ specific files
+.idea/
+target/
+codeu-starter-project.iml
+# Eclipse specific files
+.project/
+.settings/
+.classpath/
+preferences
