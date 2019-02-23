@@ -14,6 +14,7 @@ import com.google.codeu.data.Datastore;
 /**
  * Handles fetching and saving user data.
  */
+// When user requests the /about URL, AboutMeServlet class is executed.
 @WebServlet("/about")
 public class AboutMeServlet extends HttpServlet {
 
@@ -42,6 +43,7 @@ public class AboutMeServlet extends HttpServlet {
 
         String aboutMe = "This is " + user + "'s about me.";
 
+        // Display the aboutMe string on the page at http://localhost:8080/about?user=<user>
         response.getOutputStream().println(aboutMe);
     }
 

@@ -42,11 +42,12 @@ function showMessageFormIfViewingSelf() {
             loginStatus.username == parameterUsername) {
           const messageForm = document.getElementById('message-form');
           messageForm.classList.remove('hidden');
+          // Make about me form visible.
           document.getElementById('about-me-form').classList.remove('hidden');
         }
       });
 }
-
+/** Fetches the user's about me data and adds it to the page. **/
 function fetchAboutMe(){
   const url = '/about?user=' + parameterUsername;
   fetch(url).then((response) => {
