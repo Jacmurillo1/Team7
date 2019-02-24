@@ -35,7 +35,7 @@ import org.jsoup.safety.Whitelist;
 public class MessageServlet extends HttpServlet {
 
   private Datastore datastore;
-  
+
   @Override
   public void init() {
     datastore = new Datastore();
@@ -77,11 +77,12 @@ public class MessageServlet extends HttpServlet {
 
     String user = userService.getCurrentUser().getEmail();
     String text = Jsoup.clean(request.getParameter("text"), Whitelist.none());
+    //this gets the value of the query parameter
     String recipient = request.getParameter("recipient");
-
+    // now adds recipient to the constructor to fix compilation errors
     Message message = new Message(user, text, recipient);
     datastore.storeMessage(message);
-
+    //now this redirects the user to return to the page they came from instead of going back to their own page
     response.sendRedirect("/user-page.html?user=" + recipient);
   }
 }
