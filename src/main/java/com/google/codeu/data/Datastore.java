@@ -85,4 +85,13 @@ public class Datastore {
         PreparedQuery results = datastore.prepare(query);
         return results.countEntities(FetchOptions.Builder.withLimit(1000));
     }
+
+    /**
+     * Returns the total number of users
+     */
+    public int getTotalUserCount() {
+        Query query = new Query("User");
+        PreparedQuery results = datastore.prepare(query);
+        return results.countEntities(FetchOptions.Builder.withLimit(1000));
+    }
 }
