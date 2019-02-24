@@ -47,24 +47,35 @@ public class Datastore {
   }
 
   /**
-   * Gets messages posted by a specific user.
+   * Gets all the messages or message from a certian user.
    *
-   * @return a list of messages posted by the user, or empty list if user has never posted a
-   *     message. List is sorted by time descending.
+   * @return a list of all messages posted if singleUser is true, if false returns all messages,
+   *    returns empty is there are no messages. List is sorted by time descending.
    */
-  public List<Message> getMessages(String user) {
+
+  public List<Message> getMessageOrMessages(String user,boolean singleUser) {
     List<Message> messages = new ArrayList<>();
 
-    Query query =
-        new Query("Message")
-            .setFilter(new Query.FilterPredicate("user", FilterOperator.EQUAL, user))
-            .addSort("timestamp", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
+    Query query;
 
+    if(singleUser){
+      query = new Query("Message")
+      .setFilter(new Query.FilterPredicate("user", FilterOperator.EQUAL, user))
+      .addSort("timestamp", SortDirection.DESCENDING);
+    }else{
+      query = new Query("Message")
+      .addSort("timestamp", SortDirection.DESCENDING);
+    }   
+
+    PreparedQuery results = datastore.prepare(query);
+           
     for (Entity entity : results.asIterable()) {
       try {
         String idString = entity.getKey().getName();
         UUID id = UUID.fromString(idString);
+        if(!singleUser){
+        user = (String) entity.getProperty("user");
+        }
         String text = (String) entity.getProperty("text");
         long timestamp = (long) entity.getProperty("timestamp");
 
@@ -76,7 +87,29 @@ public class Datastore {
         e.printStackTrace();
       }
     }
-
     return messages;
   }
+
+/**
+   * Gets messages posted by a specific user.
+   *
+   * @return a list of messages posted by the user, or empty list if user has never posted a
+   *     message. List is sorted by time descending.
+   */
+  public List<Message> getMessages(String user) {
+    return getMessageOrMessages(user, true);
+  }
+
+  /**
+   * Gets all the messages.
+   *
+   * @return a list of all messages posted, or empty list if
+   *    there are no messages. List is sorted by time descending.
+   */
+  public List<Message> getAllMessages() {
+    return getMessageOrMessages(null,false);
+  }
+
+
+
 }
