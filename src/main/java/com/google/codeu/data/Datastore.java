@@ -39,6 +39,8 @@ public class Datastore {
     messageEntity.setProperty("user", message.getUser());
     messageEntity.setProperty("text", message.getText());
     messageEntity.setProperty("timestamp", message.getTimestamp());
+    //new addition all it does is storing the recipient in our data
+    messageEntity.setProperty("recipient", message.getRecipient());
 
     datastore.put(messageEntity);
   }
@@ -49,12 +51,13 @@ public class Datastore {
    * @return a list of messages posted by the user, or empty list if user has never posted a
    *     message. List is sorted by time descending.
    */
-  public List<Message> getMessages(String user) {
+   //changes the behavior so the function returns the messages where the user is the recipient instead of the author
+  public List<Message> getMessages(String recipient) {
     List<Message> messages = new ArrayList<>();
 
     Query query =
         new Query("Message")
-            .setFilter(new Query.FilterPredicate("user", FilterOperator.EQUAL, user))
+            .setFilter(new Query.FilterPredicate("recipient", FilterOperator.EQUAL, recipient)) // change made so it is the recipient
             .addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
@@ -62,10 +65,15 @@ public class Datastore {
       try {
         String idString = entity.getKey().getName();
         UUID id = UUID.fromString(idString);
+        //adds user to be the one who posts and not the one to recieve
+        String user = (String) entity.getProperty("user");
+
         String text = (String) entity.getProperty("text");
         long timestamp = (long) entity.getProperty("timestamp");
 
-        Message message = new Message(id, user, text, timestamp);
+        // now adds recipient to the constructor
+        Message message = new Message(id, user, text, timestamp, recipient);
+
         messages.add(message);
       } catch (Exception e) {
         System.err.println("Error reading message.");
