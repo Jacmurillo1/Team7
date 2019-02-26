@@ -38,9 +38,11 @@ function showMessageFormIfViewingSelf() {
         return response.json();
       })
       .then((loginStatus) => {
-        if (loginStatus.isLoggedIn &&
-            loginStatus.username == parameterUsername) {
+        // I removed one of the conditions and it now shows the form as long as the user is logged in
+        if (loginStatus.isLoggedIn) {
           const messageForm = document.getElementById('message-form');
+          // now adds the recipient parameter to the form's action attribute
+          messageForm.action = '/messages?recipient=' + parameterUsername;
           messageForm.classList.remove('hidden');
         }
       });
