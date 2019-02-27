@@ -33,7 +33,6 @@ public class Datastore {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
   
-
   /** Stores the Message in Datastore. */
   public void storeMessage(Message message) {
     Entity messageEntity = new Entity("Message", message.getId().toString());
@@ -47,39 +46,28 @@ public class Datastore {
   }
 
   /**
-   * Gets all the messages or message from a certian user.
+   * Gets messages posted by a specific user.
    *
-   * @return a list of all messages posted if singleUser is true, if false returns all messages,
-   *    returns empty is there are no messages. List is sorted by time descending.
+   * @return a list of messages posted by the user, or empty list if user has never posted a
+   *     message. List is sorted by time descending.
    */
    //changes the behavior so the function returns the messages where the user is the recipient instead of the author
-  public List<Message> getMessageOrMessages(String recipient, boolean singleUser) {
+  public List<Message> getMessages(String recipient) {
     List<Message> messages = new ArrayList<>();
 
-    Query query;
-
-    //singleUser is true if you want to filter messages from one person
-    if(singleUser){
-      query = new Query("Message")
+    Query query =
+      new Query("Message")
       .setFilter(new Query.FilterPredicate("recipient", FilterOperator.EQUAL, recipient)) // change made so it is the recipient
       .addSort("timestamp", SortDirection.DESCENDING);
-
-    }else{
-      query = new Query("Message")
-      .addSort("timestamp", SortDirection.DESCENDING);
-      
-    }
     PreparedQuery results = datastore.prepare(query);
+
     for (Entity entity : results.asIterable()) {
       try {
         String idString = entity.getKey().getName();
         UUID id = UUID.fromString(idString);
-        String user = "";
-        //if returns all messages
-        if(!singleUser){
-          //adds user to be the one who posts and not the one to recieve
-          user = (String) entity.getProperty("user");
-        }
+        //adds user to be the one who posts and not the one to recieve
+        String user = (String) entity.getProperty("user");
+
         String text = (String) entity.getProperty("text");
         long timestamp = (long) entity.getProperty("timestamp");
 
@@ -97,27 +85,6 @@ public class Datastore {
     return messages;
   }
 
-  /**
-   * Gets messages posted by a specific user.
-   *
-   * @return a list of messages posted by the user, or empty list if user has never posted a
-   *     message. List is sorted by time descending.
-   */
-  public List<Message> getMessages(String user) {
-    return getMessageOrMessages(user, true);
-  }
-
-  /**
-   * Gets all the messages.
-   *
-   * @return a list of all messages posted, or empty list if
-   *    there are no messages. List is sorted by time descending.
-   */
-  public List<Message> getAllMessages() {
-    return getMessageOrMessages(null,false);
-  }
-
-
     /**
      * Returns the total number of messages for all users.
      */
@@ -126,4 +93,35 @@ public class Datastore {
         PreparedQuery results = datastore.prepare(query);
         return results.countEntities(FetchOptions.Builder.withLimit(1000));
     }
+
+    /**
+     * Returns all the messages
+     */
+
+    public List<Message> getAllMessages(){
+      List<Message> messages = new ArrayList<>();
+    
+      Query query = new Query("Message")
+        .addSort("timestamp", SortDirection.DESCENDING);
+      PreparedQuery results = datastore.prepare(query);
+    
+      for (Entity entity : results.asIterable()) {
+       try {
+        String idString = entity.getKey().getName();
+        UUID id = UUID.fromString(idString);
+        String user = (String) entity.getProperty("user");
+        String text = (String) entity.getProperty("text");
+        long timestamp = (long) entity.getProperty("timestamp");
+    
+        Message message = new Message(id, user, text, timestamp,null);
+        messages.add(message);
+       } catch (Exception e) {
+        System.err.println("Error reading message.");
+        System.err.println(entity.toString());
+        e.printStackTrace();
+       }
+      }
+    
+      return messages;
+     }
 }
