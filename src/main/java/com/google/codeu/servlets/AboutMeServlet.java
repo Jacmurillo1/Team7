@@ -11,6 +11,8 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.codeu.data.Datastore;
 import com.google.codeu.data.User;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 /**
  * Handles fetching and saving user data.
@@ -64,7 +66,8 @@ public class AboutMeServlet extends HttpServlet {
         }
 
         String userEmail = userService.getCurrentUser().getEmail();
-        String aboutMe = request.getParameter("about-me");
+        // Strip out any potentially dangerous user input, such as HTML code
+        String aboutMe = Jsoup.clean(request.getParameter("about-me"), Whitelist.none());
 
         User user = new User(userEmail, aboutMe);
         datastore.storeUser(user);
