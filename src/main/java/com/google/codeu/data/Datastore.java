@@ -111,7 +111,8 @@ public class Datastore {
                 .setFilter(new Query.FilterPredicate("email", FilterOperator.EQUAL, email));
         PreparedQuery results = datastore.prepare(query);
         Entity userEntity = results.asSingleEntity();
-        if (userEntity == null) {
+
+        if (userEntity == null)
             return null;
         }
         String aboutMe = (String) userEntity.getProperty("aboutMe");
@@ -150,5 +151,8 @@ public class Datastore {
     
       return messages;
      }
+<<<<<<< HEAD
 
+=======
+>>>>>>> f4aeb11864ced90492d877b489cf213f54763a0e
 }
