@@ -46,7 +46,7 @@ public class AboutMeServlet extends HttpServlet {
 
         User userData = datastore.getUser(user);
 
-        if(userData == null || userData.getAboutMe() == null) {
+        if (userData == null || userData.getAboutMe() == null) {
             // User doesn't exist or doesn't have any about me data
             return;
         }
