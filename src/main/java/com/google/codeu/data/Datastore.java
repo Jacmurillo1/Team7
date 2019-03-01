@@ -151,8 +151,5 @@ public class Datastore {
     
       return messages;
      }
-<<<<<<< HEAD
 
-=======
->>>>>>> f4aeb11864ced90492d877b489cf213f54763a0e
 }
