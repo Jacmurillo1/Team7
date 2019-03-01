@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.codeu.data.Datastore;
+import com.google.codeu.data.User;
 
 /**
  * Handles fetching and saving user data.
@@ -41,10 +42,15 @@ public class AboutMeServlet extends HttpServlet {
             return;
         }
 
-        String aboutMe = "This is " + user + "'s about me.";
+        User userData = datastore.getUser(user);
 
-        // Display the aboutMe string on the page at http://localhost:8080/about?user=<user>
-        response.getOutputStream().println(aboutMe);
+        if(userData == null || userData.getAboutMe() == null) {
+            // User doesn't exist or doesn't have any about me data
+            return;
+        }
+
+        // Display the user's About Me on the page at http://localhost:8080/about?user=<user>
+        response.getOutputStream().println(userData.getAboutMe());
     }
 
     @Override
@@ -58,9 +64,10 @@ public class AboutMeServlet extends HttpServlet {
         }
 
         String userEmail = userService.getCurrentUser().getEmail();
+        String aboutMe = request.getParameter("about-me");
 
-        System.out.println("Saving about me for " + userEmail);
-        // TODO: save the data
+        User user = new User(userEmail, aboutMe);
+        datastore.storeUser(user);
 
         response.sendRedirect("/user-page.html?user=" + userEmail);
     }
