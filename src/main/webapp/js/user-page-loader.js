@@ -44,6 +44,8 @@ function showMessageFormIfViewingSelf() {
           // now adds the recipient parameter to the form's action attribute
           messageForm.action = '/messages?recipient=' + parameterUsername;
           messageForm.classList.remove('hidden');
+          // Unhide about me form when user is logged in
+          document.getElementById('about-me-form').classList.remove('hidden');
         }
       });
 }
@@ -92,9 +94,26 @@ function buildMessageDiv(message) {
   return messageDiv;
 }
 
+/** Requests user's about data and adds it to the page **/
+function fetchAboutMe(){
+  const url = '/about?user=' + parameterUsername;
+  fetch(url).then((response) => {
+    return response.text();
+  }).then((aboutMe) => {
+    const aboutMeContainer = document.getElementById('about-me-container');
+    if(aboutMe == ''){
+      aboutMe = 'This user has not entered any information yet.';
+    }
+
+    aboutMeContainer.innerHTML = aboutMe;
+
+  });
+}
+
 /** Fetches data and populates the UI of the page. */
 function buildUI() {
   setPageTitle();
   showMessageFormIfViewingSelf();
   fetchMessages();
+  fetchAboutMe();
 }
