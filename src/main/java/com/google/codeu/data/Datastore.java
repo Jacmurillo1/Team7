@@ -112,7 +112,7 @@ public class Datastore {
         PreparedQuery results = datastore.prepare(query);
         Entity userEntity = results.asSingleEntity();
 
-        if (userEntity == null)
+        if (userEntity == null) {
             return null;
         }
         String aboutMe = (String) userEntity.getProperty("aboutMe");
