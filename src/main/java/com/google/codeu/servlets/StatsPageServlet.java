@@ -2,6 +2,8 @@ package com.google.codeu.servlets;
 
 import com.google.codeu.data.Datastore;
 import com.google.gson.JsonObject;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,7 +39,7 @@ public class StatsPageServlet extends HttpServlet {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("messageCount", messageCount);
         jsonObject.addProperty("userCount", userCount);
-        response.getOutputStream().println(jsonObject.toString());
+        response.getOutputStream().println(Jsoup.clean(jsonObject.toString(), Whitelist.none()));
     }
 }
 
