@@ -24,6 +24,8 @@
 
         // Set chart options
         var chart_options = {
+                       'title':'Number of messages per user',
+                       'is3D':true,
                        'width':800,
                        'height':400};
 
