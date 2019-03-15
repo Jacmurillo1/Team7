@@ -8,6 +8,21 @@
       // Callback that creates and populates a data table,
       // instantiates the pie chart, passes in the data and
       // draws it.
+
+      function fetchMessageData() {
+        fetch("/messagechart")
+        .then((response) => {
+          return response.json();
+        })
+        .then((msgJson) => {
+          console.log(msgJson);
+        });
+      }
+      
+      fetchMessageData();
+
+
+
       function drawChart() {
 
         // Create the data table.
