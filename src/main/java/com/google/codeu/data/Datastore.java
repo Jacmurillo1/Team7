@@ -43,6 +43,10 @@ public class Datastore {
     messageEntity.setProperty("recipient", message.getRecipient());
 
     datastore.put(messageEntity);
+
+    if(message.getImageUrl() != null) {
+          messageEntity.setProperty("imageUrl", message.getImageUrl());
+    }
   }
 
   /**
@@ -160,5 +164,6 @@ public class Datastore {
     
       return messages;
      }
+
 
 }

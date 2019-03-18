@@ -38,15 +38,28 @@ function showMessageFormIfViewingSelf() {
         return response.json();
       })
       .then((loginStatus) => {
-        // I removed one of the conditions and it now shows the form as long as the user is logged in
-        if (loginStatus.isLoggedIn) {
+        // as long as the user is logged in and viewing self
+        if (loginStatus.isLoggedIn && loginStatus.username == parameterUsername) {
           const messageForm = document.getElementById('message-form');
           // now adds the recipient parameter to the form's action attribute
           messageForm.action = '/messages?recipient=' + parameterUsername;
           messageForm.classList.remove('hidden');
           // Unhide about me form when user is logged in
           document.getElementById('about-me-form').classList.remove('hidden');
+          fetchImageUploadUrlAndShowForm();
         }
+      });
+}
+
+function fetchImageUploadUrlAndShowForm() {
+  fetch('/image-upload-url')
+      .then((response) => {
+        return response.text();
+      })
+      .then((imageUploadUrl) => {
+        const messageForm = document.getElementById('message-form');
+        messageForm.action = imageUploadUrl;
+        messageForm.classList.remove('hidden');
       });
 }
 
@@ -117,7 +130,8 @@ function fetchAboutMe(){
 
 /** Fetches data and populates the UI of the page. */
 function buildUI() {
-  ClassicEditor.create( document.getElementById('message-input') );
+  const config = {removePlugins: [ 'ImageUpload' ]};
+  ClassicEditor.create(document.getElementById('message-input'), config );
   setPageTitle();
   showMessageFormIfViewingSelf();
   fetchMessages();
