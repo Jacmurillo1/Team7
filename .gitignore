@@ -7,7 +7,6 @@ codeu-starter-project.iml
 .project/
 .settings/
 .classpath/
-.DS_Store
 preferences
 # Ignore Mac DS_Store files
 .DS_Store
