@@ -32,7 +32,7 @@ public class Datastore {
   public Datastore() {
     datastore = DatastoreServiceFactory.getDatastoreService();
   }
-  
+
   /** Stores the Message in Datastore. */
   public void storeMessage(Message message) {
     Entity messageEntity = new Entity("Message", message.getId().toString());
@@ -57,36 +57,38 @@ public class Datastore {
    */
    //changes the behavior so the function returns the messages where the user is the recipient instead of the author
   public List<Message> getMessages(String recipient) {
-    List<Message> messages = new ArrayList<>();
+    if(recipient==null){
+      return getAllMessages();
+    }else{
+      List<Message> messages = new ArrayList<>();
+      Query query =
+        new Query("Message")
+        .setFilter(new Query.FilterPredicate("recipient", FilterOperator.EQUAL, recipient)) // change made so it is the recipient
+        .addSort("timestamp", SortDirection.DESCENDING);
+      PreparedQuery results = datastore.prepare(query);
 
-    Query query =
-      new Query("Message")
-      .setFilter(new Query.FilterPredicate("recipient", FilterOperator.EQUAL, recipient)) // change made so it is the recipient
-      .addSort("timestamp", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
+      for (Entity entity : results.asIterable()) {
+        try {
+          String idString = entity.getKey().getName();
+          UUID id = UUID.fromString(idString);
+          //adds user to be the one who posts and not the one to recieve
+          String user = (String) entity.getProperty("user");
 
-    for (Entity entity : results.asIterable()) {
-      try {
-        String idString = entity.getKey().getName();
-        UUID id = UUID.fromString(idString);
-        //adds user to be the one who posts and not the one to recieve
-        String user = (String) entity.getProperty("user");
+          String text = (String) entity.getProperty("text");
+          long timestamp = (long) entity.getProperty("timestamp");
 
-        String text = (String) entity.getProperty("text");
-        long timestamp = (long) entity.getProperty("timestamp");
+          // now adds recipient to the constructor
+          Message message = new Message(id, user, text, timestamp, recipient);
 
-        // now adds recipient to the constructor
-        Message message = new Message(id, user, text, timestamp, recipient);
-
-        messages.add(message);
-      } catch (Exception e) {
-        System.err.println("Error reading message.");
-        System.err.println(entity.toString());
-        e.printStackTrace();
+          messages.add(message);
+        } catch (Exception e) {
+          System.err.println("Error reading message.");
+          System.err.println(entity.toString());
+          e.printStackTrace();
+        }
       }
+      return messages;
     }
-
-    return messages;
   }
 
     /**
@@ -140,11 +142,11 @@ public class Datastore {
 
     public List<Message> getAllMessages(){
       List<Message> messages = new ArrayList<>();
-    
+
       Query query = new Query("Message")
         .addSort("timestamp", SortDirection.DESCENDING);
       PreparedQuery results = datastore.prepare(query);
-    
+
       for (Entity entity : results.asIterable()) {
        try {
         String idString = entity.getKey().getName();
@@ -152,7 +154,7 @@ public class Datastore {
         String user = (String) entity.getProperty("user");
         String text = (String) entity.getProperty("text");
         long timestamp = (long) entity.getProperty("timestamp");
-    
+
         Message message = new Message(id, user, text, timestamp,null);
         messages.add(message);
        } catch (Exception e) {
@@ -161,7 +163,7 @@ public class Datastore {
         e.printStackTrace();
        }
       }
-    
+
       return messages;
      }
 
