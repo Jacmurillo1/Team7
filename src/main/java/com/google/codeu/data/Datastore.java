@@ -43,6 +43,10 @@ public class Datastore {
     messageEntity.setProperty("recipient", message.getRecipient());
 
     datastore.put(messageEntity);
+
+    if(message.getImageUrl() != null) {
+          messageEntity.setProperty("imageUrl", message.getImageUrl());
+    }
   }
 
   /**
@@ -97,6 +101,42 @@ public class Datastore {
     }
 
     /**
+     * Returns the total number of users
+     */
+    public int getTotalUserCount() {
+        Query query = new Query("User");
+        PreparedQuery results = datastore.prepare(query);
+        return results.countEntities(FetchOptions.Builder.withLimit(1000));
+    }
+
+    /** Stores the User in Datastore. */
+    public void storeUser(User user) {
+        Entity userEntity = new Entity("User", user.getEmail());
+        userEntity.setProperty("email", user.getEmail());
+        userEntity.setProperty("aboutMe", user.getAboutMe());
+        datastore.put(userEntity);
+    }
+
+    /**
+     * Returns the User owned by the email address, or
+     * null if no matching User was found.
+     */
+    public User getUser(String email) {
+        Query query = new Query("User")
+                .setFilter(new Query.FilterPredicate("email", FilterOperator.EQUAL, email));
+        PreparedQuery results = datastore.prepare(query);
+        Entity userEntity = results.asSingleEntity();
+
+        if (userEntity == null) {
+            return null;
+        }
+        String aboutMe = (String) userEntity.getProperty("aboutMe");
+        User user = new User(email, aboutMe);
+
+        return user;
+    }
+
+    /**
      * Returns all the messages
      */
 
@@ -126,4 +166,41 @@ public class Datastore {
 
       return messages;
      }
+
+
+    /**
+     * Retrieving and storing instances of UserMarker class for the user map
+     */
+    public List<UserMarker> getMarkers() {
+        List<UserMarker> markers = new ArrayList<>();
+
+        Query query = new Query("UserMarker");
+        PreparedQuery results = datastore.prepare(query);
+
+        for (Entity entity : results.asIterable()) {
+            try {
+                double lat = (double) entity.getProperty("lat");
+                double lng = (double) entity.getProperty("lng");
+                String content = (String) entity.getProperty("content");
+
+                UserMarker marker = new UserMarker(lat, lng, content);
+                markers.add(marker);
+            } catch (Exception e) {
+                System.err.println("Error reading marker.");
+                System.err.println(entity.toString());
+                e.printStackTrace();
+            }
+        }
+        return markers;
+    }
+
+    public void storeMarker(UserMarker marker) {
+        Entity markerEntity = new Entity("UserMarker");
+        markerEntity.setProperty("lat", marker.getLat());
+        markerEntity.setProperty("lng", marker.getLng());
+        markerEntity.setProperty("content", marker.getContent());
+        datastore.put(markerEntity);
+    }
+
+
 }
