@@ -16,6 +16,7 @@
 
 package com.google.codeu.data;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /** A single message posted by a user. */
@@ -77,4 +78,12 @@ public class Message {
   public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl;}
 
   public String getImageUrl() { return imageUrl;}
+
+  @Override
+  public boolean equals(Object message) {
+    Message m = (Message)message;
+    return id.equals(m.id) && Objects.equals(user, m.user) && Objects.equals(text, m.text)
+            && Objects.equals(timestamp, m.timestamp) && Objects.equals(recipient, m.recipient)
+            && Objects.equals(imageUrl, m.imageUrl);
+  }
 }
