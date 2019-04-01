@@ -29,6 +29,10 @@ import com.google.codeu.data.Message;
 import com.google.gson.Gson;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.Document.Type;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,6 +47,21 @@ import java.util.Map;
 public class MessageServlet extends HttpServlet {
 
   private Datastore datastore;
+
+  /**
+    * Gets a certain text and returns its sentiment score obtained on the ML API.
+    */
+
+    private float getSentimentScore(String text) throws IOException {
+        Document doc = Document.newBuilder()
+          .setContent(text).setType(Type.PLAIN_TEXT).build();
+
+        LanguageServiceClient languageService = LanguageServiceClient.create();
+        Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+        languageService.close();
+
+        return sentiment.getScore();
+    }
 
   @Override
   public void init() {
@@ -91,9 +110,10 @@ public class MessageServlet extends HttpServlet {
     String textWithImagesReplaced = userText.replaceAll(regex, replacement);
     //this gets the value of the query parameter
     String recipient = request.getParameter("recipient");
+    float sentimentScore = getSentimentScore(textWithImagesReplaced);
 
     // now adds recipient to the constructor to fix compilation error
-    Message message = new Message(user, textWithImagesReplaced, recipient);
+    Message message = new Message(user, textWithImagesReplaced, recipient, sentimentScore);
 
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
@@ -110,5 +130,7 @@ public class MessageServlet extends HttpServlet {
     //now this redirects the user to return to the page they came from instead of going back to their own page
     response.sendRedirect("/user-page.html?user=" + user);
   }
+
+
 
 }
