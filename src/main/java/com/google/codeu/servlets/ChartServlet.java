@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 * Redirects the user to the Google logout page, which then redirects to the homepage.
 */
 @WebServlet("/messagechart")
-public class ChatServlet extends HttpServlet {
+public class ChartServlet extends HttpServlet {
 
   private Datastore datastore;
 

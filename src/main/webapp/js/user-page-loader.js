@@ -38,13 +38,28 @@ function showMessageFormIfViewingSelf() {
         return response.json();
       })
       .then((loginStatus) => {
-        // I removed one of the conditions and it now shows the form as long as the user is logged in
-        if (loginStatus.isLoggedIn) {
+        // as long as the user is logged in and viewing self
+        if (loginStatus.isLoggedIn && loginStatus.username == parameterUsername) {
           const messageForm = document.getElementById('message-form');
           // now adds the recipient parameter to the form's action attribute
           messageForm.action = '/messages?recipient=' + parameterUsername;
           messageForm.classList.remove('hidden');
+          // Unhide about me form when user is logged in
+          document.getElementById('about-me-form').classList.remove('hidden');
+          fetchImageUploadUrlAndShowForm();
         }
+      });
+}
+
+function fetchImageUploadUrlAndShowForm() {
+  fetch('/image-upload-url')
+      .then((response) => {
+        return response.text();
+      })
+      .then((imageUploadUrl) => {
+        const messageForm = document.getElementById('message-form');
+        messageForm.action = imageUploadUrl;
+        messageForm.classList.remove('hidden');
       });
 }
 
@@ -77,24 +92,50 @@ function fetchMessages() {
 function buildMessageDiv(message) {
   const headerDiv = document.createElement('div');
   headerDiv.classList.add('message-header');
+  headerDiv.classList.add('padded');
+
   headerDiv.appendChild(document.createTextNode(
-      message.user + ' - ' + new Date(message.timestamp)));
+      message.user + ' - ' +
+      new Date(message.timestamp)+
+      ' [' + message.sentimentScore + ']'));
 
   const bodyDiv = document.createElement('div');
   bodyDiv.classList.add('message-body');
+  bodyDiv.classList.add('padded');
   bodyDiv.innerHTML = message.text;
 
   const messageDiv = document.createElement('div');
-  messageDiv.classList.add('message-div');
+  messageDiv.classList.add('rounded');
+  messageDiv.classList.add('panel');
+//  messageDiv.classList.add('message-div');
   messageDiv.appendChild(headerDiv);
   messageDiv.appendChild(bodyDiv);
 
   return messageDiv;
 }
 
+/** Requests user's about data and adds it to the page **/
+function fetchAboutMe(){
+  const url = '/about?user=' + parameterUsername;
+  fetch(url).then((response) => {
+    return response.text();
+  }).then((aboutMe) => {
+    const aboutMeContainer = document.getElementById('about-me-container');
+    if(aboutMe == ''){
+      aboutMe = 'This user has not entered any information yet.';
+    }
+
+    aboutMeContainer.innerHTML = aboutMe;
+
+  });
+}
+
 /** Fetches data and populates the UI of the page. */
 function buildUI() {
+  const config = {removePlugins: [ 'ImageUpload' ]};
+  ClassicEditor.create(document.getElementById('message-input'), config );
   setPageTitle();
   showMessageFormIfViewingSelf();
   fetchMessages();
+  fetchAboutMe();
 }
