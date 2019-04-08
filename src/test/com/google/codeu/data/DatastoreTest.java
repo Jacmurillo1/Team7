@@ -54,8 +54,8 @@ public class DatastoreTest {
 
 		List<UserMarker> markers = dataStore.getMarkers();
 		assertEquals(2, markers.size());
-		assertTrue(markers.get(0).equals(new UserMarker(lat.fromString("38.8999"), lng.fromString("-77.0484"), "GW")) );
-		assertTrue(markers.get(1).equals(new UserMarker(lng.fromString("38.9851"), lng.fromString("-77.0949"), "Bethesda")));
+		assertTrue(markers.get(0).equals(new UserMarker(38.8999, -77.0484, "GW")) );
+		assertTrue(markers.get(1).equals(new UserMarker(38.9851, -77.0949, "Bethesda")));
 	}
 
 }
