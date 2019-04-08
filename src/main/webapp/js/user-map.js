@@ -40,6 +40,8 @@ function createMarkerForDisplay(lat, lng, content){
 
   const marker = new google.maps.Marker({
     position: {lat: lat, lng: lng},
+    // F denotes 'free'
+    label: 'F',
     map: map
   });
 
@@ -75,6 +77,7 @@ function createMarkerForEdit(lat, lng){
 
   editMarker = new google.maps.Marker({
     position: {lat: lat, lng: lng},
+    label: 'F',
     map: map
   });
 
@@ -94,6 +97,7 @@ function createMarkerForEdit(lat, lng){
 // Builds a div that contains a textarea and a button
 function buildInfoWindowInput(lat, lng){
   const textBox = document.createElement('textarea');
+  textBox.placeholder = "Title: \nDescription: \n";
   const button = document.createElement('button');
   button.appendChild(document.createTextNode('Submit'));
 
