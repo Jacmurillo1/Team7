@@ -1,19 +1,27 @@
 let editMarker;
 let map;
 
-function createMap(){
+function createMapIfLoggedIn(){
+    fetch('/login-status')
+    .then((response) => {
+        return response.json();
+    })
+    .then((loginStatus) => {
+        if (loginStatus.isLoggedIn) {
+            map = new google.maps.Map(document.getElementById('map'), {
+              // Sets the center of the map to be Antarctica
+              center: {lat: -77.305164, lng: 23.7427},
+              zoom: 6
+            });
 
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 38.5949, lng: -94.8923},
-    zoom: 4
-  });
+            // Adds marker to map where user clicked
+            map.addListener('click', (event) => {
+              createMarkerForEdit(event.latLng.lat(), event.latLng.lng());
+            });
 
-  // Add marker to map where user clicked
-  map.addListener('click', (event) => {
-    createMarkerForEdit(event.latLng.lat(), event.latLng.lng());
-  });
-
-  fetchMarkers();
+            fetchMarkers();
+        }
+    });
 }
 
 // Uses Fetch API to get markers from server and adds each to the map
@@ -43,7 +51,7 @@ function createMarkerForDisplay(lat, lng, content){
   });
 }
 
-// Send new markers to the server
+// Sends new markers to the server
 function postMarker(lat, lng, content){
   const params = new URLSearchParams();
   params.append('lat', lat);
@@ -56,7 +64,7 @@ function postMarker(lat, lng, content){
   });
 }
 
-// Create map marker that takes in info from the user
+// Creates map marker that takes in info from the user
 function createMarkerForEdit(lat, lng){
 
   // Calling setMap(null) on the previous marker before creating a new one
@@ -70,12 +78,12 @@ function createMarkerForEdit(lat, lng){
     map: map
   });
 
-  // Populate the user input content in an Info Window that we attach to our marker
+  // Populates the user input content in an Info Window that we attach to our marker
   const infoWindow = new google.maps.InfoWindow({
     content: buildInfoWindowInput(lat, lng)
   });
 
-  // Remove the marker when the user closes the Info Window
+  // Removes the marker when the user closes the Info Window
   google.maps.event.addListener(infoWindow, 'closeclick', () => {
     editMarker.setMap(null);
   });
@@ -83,7 +91,7 @@ function createMarkerForEdit(lat, lng){
   infoWindow.open(map, editMarker);
 }
 
-// Helper function that builds a div that contains a textarea and a button
+// Builds a div that contains a textarea and a button
 function buildInfoWindowInput(lat, lng){
   const textBox = document.createElement('textarea');
   const button = document.createElement('button');
@@ -93,7 +101,7 @@ function buildInfoWindowInput(lat, lng){
   button.onclick = () => {
     postMarker(lat, lng, textBox.value);
     createMarkerForDisplay(lat, lng, textBox.value);
-    // Remove the editable marker after adding display marker
+    // Removes the editable marker after adding display marker
     editMarker.setMap(null);
   };
 

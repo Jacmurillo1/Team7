@@ -6,13 +6,14 @@
     <script src="/js/user-map.js"></script>
     <style>
         #map{
-          width: 500px;
-          height: 500px;
+          width: 800px;
+          height: 800px;
         }
     </style>
 </head>
-<body onload="createMap();">
+<body onload="createMapIfLoggedIn();">
     <h1>User Map</h1>
+    <p>Click on the map to place a new free listing marker!</p>
     <div id="map"></div>
 </body>
 </html>
