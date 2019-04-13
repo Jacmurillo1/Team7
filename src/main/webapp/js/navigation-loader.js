@@ -30,8 +30,6 @@ function addLoginOrLogoutLinkToNavigation() {
         return response.json();
       })
       .then((loginStatus) => {
-        navigationElement.appendChild(
-            createListItem(createLink('/stats.html', 'Stats')));
         if (loginStatus.isLoggedIn) {
           navigationElement.appendChild(createListItem(createLink(
               '/user-page.html?user=' + loginStatus.username, 'Your Page')));
@@ -43,7 +41,13 @@ function addLoginOrLogoutLinkToNavigation() {
               createListItem(createLink('/login', 'Login')));
         }
         navigationElement.appendChild(
+            createListItem(createLink('/feed.html', 'Feed')));
+        navigationElement.appendChild(
+            createListItem(createLink('/map.html', 'Map')));
+        navigationElement.appendChild(
             createListItem(createLink('/chart.html', 'Charts')));
+        navigationElement.appendChild(
+                createListItem(createLink('/stats.html', 'Stats')));
       });
 }
 
