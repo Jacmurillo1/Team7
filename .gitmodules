@@ -1,0 +1,3 @@
+[submodule "ckeditor5-emoji"]
+	path = ckeditor5-emoji
+	url = https://github.com/wwalc/ckeditor5-emoji

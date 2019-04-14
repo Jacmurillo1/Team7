@@ -17,7 +17,7 @@ limitations under the License.
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/4.11.4/standard/ckeditor.js"></script>
     <title>User Page</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/main.css">
@@ -52,6 +52,9 @@ limitations under the License.
       <h2>Enter a new message:</h2>
       <br/>
       <textarea name="text" id="message-input" class = "rounded"></textarea>
+      <script>
+      CKEDITOR.replace( 'text' );
+      </script>
       <br/>
       Add an image to your message:
       <input type="file" name="image">
