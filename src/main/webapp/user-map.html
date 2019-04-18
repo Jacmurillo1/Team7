@@ -6,14 +6,29 @@
     <script src="/js/user-map.js"></script>
     <style>
         #map{
-          width: 800px;
-          height: 800px;
+            width: 800px;
+            height: 800px;
+        }
+        #legend {
+            font-family: Arial, sans-serif;
+            background: #fff;
+            padding: 10px;
+            margin: 10px;
+            border: 3px solid #000;
+        }
+        #legend h3 {
+            margin-top: 0;
+        }
+        #legend img {
+            vertical-align: middle;
         }
     </style>
 </head>
 <body onload="createMapIfLoggedIn();">
-    <h1>User Map</h1>
+    <h1>Antarctica Institute of Technology</h1>
+    <h3>User Map</h3>
     <p>Click on the map to place a new free listing marker!</p>
     <div id="map"></div>
+    <div id="legend"><h3>Legend</h3></div>
 </body>
 </html>

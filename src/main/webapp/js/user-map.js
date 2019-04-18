@@ -20,6 +20,30 @@ function createMapIfLoggedIn(){
             });
 
             fetchMarkers();
+
+            var iconBase = 'https://maps.google.com/mapfiles/kml/paddle/';
+                var icons = {
+                  free: {
+                    name: 'Free',
+                    icon: iconBase + 'F.png'
+                  },
+                  library: {
+                    name: 'Hangout',
+                    icon: iconBase + 'H.png'
+                  }
+            };
+
+            var legend = document.getElementById('legend');
+            for (var key in icons) {
+              var type = icons[key];
+              var name = type.name;
+              var icon = type.icon;
+              var div = document.createElement('div');
+              div.innerHTML = '<img src="' + icon + '"> ' + name;
+              legend.appendChild(div);
+            }
+
+            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
         }
     });
 }
