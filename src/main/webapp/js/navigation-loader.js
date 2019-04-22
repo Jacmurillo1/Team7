@@ -41,10 +41,14 @@ function addLoginOrLogoutLinkToNavigation() {
               createListItem(createLink('/login', 'Login')));
         }
         navigationElement.appendChild(
-            createListItem(createLink('/chart.html', 'Charts')));
-
+            createListItem(createLink('/feed.html', 'Feed')));
         navigationElement.appendChild(
-                createListItem(createLink('/feed.html', 'Feed')));
+            createListItem(createLink('/map.html', 'Map')));
+        navigationElement.appendChild(
+            createListItem(createLink('/chart.html', 'Charts')));
+        navigationElement.appendChild(
+            createListItem(createLink('/stats.html', 'Stats')));
+
       });
 }
 

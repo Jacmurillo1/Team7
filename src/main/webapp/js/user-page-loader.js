@@ -44,6 +44,9 @@ function showMessageFormIfViewingSelf() {
           // now adds the recipient parameter to the form's action attribute
           messageForm.action = '/messages?recipient=' + parameterUsername;
           messageForm.classList.remove('hidden');
+          // Set receipt.
+          const recipientInput = document.getElementById('recipientInput');
+          recipientInput.value = parameterUsername;
           // Unhide about me form when user is logged in
           document.getElementById('about-me-form').classList.remove('hidden');
           fetchImageUploadUrlAndShowForm();

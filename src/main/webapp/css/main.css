@@ -28,5 +28,17 @@ nav ul {
 /* Keep navigation menu on one line. */
 nav li {
   display: inline-block;
-  margin-right: 10px
+  margin-right: 10px;
+}
+nav li a{
+  color: #959799;
+  padding-right: 10px;
+}
+li a:hover{
+  color: white;
+  text-decoration: none;
+
+}
+div class="card-deck"{
+
 }
