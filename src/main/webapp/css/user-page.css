@@ -18,11 +18,11 @@
    and will fill the width of its parent element. */
 body {
   margin: 0;
-  background: linear-gradient(white, #ccccff) fixed;
+  background: linear-gradient(white, #ccdfff) fixed;
   font-family:sans-serif;
 }
 
-nav {
+/*nav {
   background-color: #ccccff;
   font-size: 18pt;
   padding: 10px;
@@ -31,13 +31,13 @@ nav {
 nav a {
    color: black;
    margin-right: 10px;
- }
+ }*/
 h2 {
   margin: 0;
 }
 
 input[type=submit] {
-  background-color: #ccccff;
+  background-color: #ccdfff;
   height: 50px;
   width: 100px;
   font-size: 14pt;
@@ -67,7 +67,7 @@ input[type=submit] {
 /* Add a bottom border to the message header. */
 .message-header {
   border-bottom: thin solid black;
-  background-image: linear-gradient(to right, white , #ccccff);
+  background-image: linear-gradient(to right, white , #ccdfff);
 }
 
 /* Give the message body a margin so the text
