@@ -8,6 +8,20 @@ function createMapIfLoggedIn(){
     })
     .then((loginStatus) => {
         if (loginStatus.isLoggedIn) {
+
+            var mapDiv = document.getElementById('map');
+
+            var h1 = document.createElement("H1");
+            var ait = document.createTextNode("Antarctica Institute of Technology");
+            h1.appendChild(ait);
+            h1.className = "heading";
+            document.body.insertBefore(h1,mapDiv);
+
+            var p = document.createElement("P");
+            var description = document.createTextNode("Click on the map to place a new free listing marker!");
+            p.appendChild(description);
+            document.body.insertBefore(p,mapDiv);
+
             map = new google.maps.Map(document.getElementById('map'), {
               // Sets the center of the map to be Antarctica
               center: {lat: -77.305164, lng: 23.7427},
@@ -44,6 +58,9 @@ function createMapIfLoggedIn(){
             }
 
             map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+        } else {
+            // User not logged in
+            alert("Please login to view the map");
         }
     });
 }
